@@ -72,7 +72,7 @@ public class Gyro implements Sendable {
      * @return The unwrapped angle as a rotation 2D (ccw positive)
      */
     public Rotation2d getRotation2d() {
-        return new Rotation2d(Math.toRadians(getContinuousAngleDegrees()));
+        return new Rotation2d(Math.toRadians(getContinuousAngleDegrees())).times(-1);
 
     }
 

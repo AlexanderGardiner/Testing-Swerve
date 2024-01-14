@@ -118,19 +118,18 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    // var encoderRotation = new Rotation2d(
-    // 2 * Math.PI * (turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()
-    // / 360));
-    // SmartDashboard.putNumber("encoder rotaiton", encoderRotation.getDegrees());
-    // SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-    // encoderRotation);
+    var encoderRotation = new Rotation2d(
+        2 * Math.PI * (turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
+    SmartDashboard.putNumber("encoder rotaiton", encoderRotation.getDegrees());
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState,
+        encoderRotation);
 
     // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
-    VelocityVoltage driveVelocity = new VelocityVoltage(desiredState.speedMetersPerSecond / (Math.PI * .0762));
+    VelocityVoltage driveVelocity = new VelocityVoltage(state.speedMetersPerSecond / (Math.PI * .0762));
     driveMotor.setControl(driveVelocity);
-    SmartDashboard.putNumber("module", Math.abs(desiredState.angle.getRadians() / (2 * Math.PI) - .5));
+    SmartDashboard.putNumber("module", state.angle.getRadians() / (2 * Math.PI));
     SmartDashboard.putNumber("angle123", turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
-    turningMotor.getPIDController().setReference(Math.abs(desiredState.angle.getRadians() / (2 * Math.PI) - .5),
+    turningMotor.getPIDController().setReference(state.angle.getRadians() / (2 * Math.PI),
         ControlType.kPosition);
   }
 }

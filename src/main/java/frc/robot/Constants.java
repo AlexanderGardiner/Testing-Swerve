@@ -23,17 +23,17 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 7;
+    public static final int kFrontLeftDriveMotorPort = 3;
 
-    public static final int kFrontRightDriveMotorPort = 9;
-    public static final int kRearLeftDriveMotorPort = 3;
-    public static final int kRearRightDriveMotorPort = 5;
+    public static final int kFrontRightDriveMotorPort = 5;
+    public static final int kRearLeftDriveMotorPort = 7;
+    public static final int kRearRightDriveMotorPort = 9;
 
-    public static final int kFrontLeftTurningMotorPort = 6;
+    public static final int kFrontLeftTurningMotorPort = 2;
 
-    public static final int kFrontRightTurningMotorPort = 8;
-    public static final int kRearLeftTurningMotorPort = 2;
-    public static final int kRearRightTurningMotorPort = 4;
+    public static final int kFrontRightTurningMotorPort = 4;
+    public static final int kRearLeftTurningMotorPort = 6;
+    public static final int kRearRightTurningMotorPort = 8;
 
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = false;
