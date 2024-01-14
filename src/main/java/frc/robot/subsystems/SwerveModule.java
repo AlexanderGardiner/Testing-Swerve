@@ -56,9 +56,9 @@ public class SwerveModule {
       boolean turningEncoderReversed) {
     driveMotor = new TalonFX(driveMotorChannel);
     driveMotor.getConfigurator().apply(new TalonFXConfiguration());
-    driveConfig.Slot0.kS = 0;
-    driveConfig.Slot0.kV = 0.05;
-    driveConfig.Slot0.kP = 0.05;
+    driveConfig.Slot0.kS = 0.0001;
+    driveConfig.Slot0.kV = 0.5;
+    driveConfig.Slot0.kP = 0.03;
     driveConfig.Slot0.kI = 0;
     driveConfig.Slot0.kD = 0;
     driveConfig.CurrentLimits.SupplyCurrentLimit = 30;
@@ -67,6 +67,8 @@ public class SwerveModule {
     driveConfig.CurrentLimits.SupplyTimeThreshold = 2;
     driveConfig.Feedback.SensorToMechanismRatio = 11.0 / 40.0;
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    driveConfig.Voltage.PeakForwardVoltage = 10;
+    driveConfig.Voltage.PeakReverseVoltage = -10;
     driveMotor.getConfigurator().apply(driveConfig);
     turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     turningConfig = new SparkMaxConfig(
@@ -125,10 +127,11 @@ public class SwerveModule {
         encoderRotation);
 
     // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
-    VelocityVoltage driveVelocity = new VelocityVoltage(state.speedMetersPerSecond / (Math.PI * .0762));
+    VelocityVoltage driveVelocity = new VelocityVoltage((40 / 11.0) * state.speedMetersPerSecond / (Math.PI * .0762));
     driveMotor.setControl(driveVelocity);
-    SmartDashboard.putNumber("module", state.angle.getRadians() / (2 * Math.PI));
-    SmartDashboard.putNumber("angle123", turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+    SmartDashboard.putNumber("module", (40 / 11.0) * state.speedMetersPerSecond / (Math.PI * .0762));
+    SmartDashboard.putNumber("angle123",
+        (Math.PI * .0762) * driveMotor.getVelocity().getValueAsDouble() / (40.0 / 11.0));
     turningMotor.getPIDController().setReference(state.angle.getRadians() / (2 * Math.PI),
         ControlType.kPosition);
   }
