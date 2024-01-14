@@ -81,6 +81,8 @@ public class SwerveModule {
         1000, true, SparkMaxEncoderType.Absolute, IdleMode.kBrake, 30, 30, false, false, 1, true,
         new PIDConfig(5, 0, 0));
     SparkMaxSetup.setup(turningMotor, turningConfig);
+    turningMotor.getPIDController().setPositionPIDWrappingMinInput(0.0);
+    turningMotor.getPIDController().setPositionPIDWrappingMaxInput(1);
 
   }
 
@@ -90,8 +92,11 @@ public class SwerveModule {
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
+    SmartDashboard.putString("stateis", new SwerveModuleState(
+        -driveMotor.getVelocity().getValueAsDouble() * (Math.PI * .0762) / (11.0 / 40),
+        new Rotation2d(2 * Math.PI * turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition())).toString());
     return new SwerveModuleState(
-        driveMotor.getVelocity().getValueAsDouble(),
+        driveMotor.getVelocity().getValueAsDouble() * (Math.PI * .0762),
         new Rotation2d(2 * Math.PI * turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
   }
 
@@ -102,7 +107,7 @@ public class SwerveModule {
    */
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
-        driveMotor.getPosition().getValueAsDouble(),
+        -driveMotor.getPosition().getValueAsDouble() * (Math.PI * .0762) / (11.0 / 40),
         new Rotation2d(2 * Math.PI * turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()));
 
   }
@@ -113,19 +118,19 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    var encoderRotation = new Rotation2d(
-        2 * Math.PI * (turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition() / 360));
-    SmartDashboard.putNumber("encoder rotaiton", encoderRotation.getDegrees());
-    SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-        encoderRotation);
+    // var encoderRotation = new Rotation2d(
+    // 2 * Math.PI * (turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition()
+    // / 360));
+    // SmartDashboard.putNumber("encoder rotaiton", encoderRotation.getDegrees());
+    // SwerveModuleState state = SwerveModuleState.optimize(desiredState,
+    // encoderRotation);
 
     // state.speedMetersPerSecond *= state.angle.minus(encoderRotation).getCos();
-
-    VelocityVoltage driveVelocity = new VelocityVoltage(state.speedMetersPerSecond / (Math.PI * .0762));
+    VelocityVoltage driveVelocity = new VelocityVoltage(desiredState.speedMetersPerSecond / (Math.PI * .0762));
     driveMotor.setControl(driveVelocity);
-    SmartDashboard.putNumber("module", state.speedMetersPerSecond / (Math.PI * .0762));
-    SmartDashboard.putNumber("angle123", driveMotor.getVelocity().getValueAsDouble());
-    turningMotor.getPIDController().setReference(Math.abs(state.angle.getRadians() / (2 * Math.PI) - .5),
+    SmartDashboard.putNumber("module", Math.abs(desiredState.angle.getRadians() / (2 * Math.PI) - .5));
+    SmartDashboard.putNumber("angle123", turningMotor.getAbsoluteEncoder(Type.kDutyCycle).getPosition());
+    turningMotor.getPIDController().setReference(Math.abs(desiredState.angle.getRadians() / (2 * Math.PI) - .5),
         ControlType.kPosition);
   }
 }
