@@ -70,9 +70,9 @@ public class DriveSubsystem extends SubsystemBase {
             new ReplanningConfig()),
         () -> {
           if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            return true;
-          } else {
             return false;
+          } else {
+            return true;
           }
         }, this);
   }
@@ -145,7 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             DriveConstants.kDrivePeriod));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond * 5);
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond * 2);
     SmartDashboard.putString("desired5i73", swerveModuleStates[0].toString());
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
@@ -154,7 +154,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    this.drive(-chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond,
+    this.drive(-chassisSpeeds.vxMetersPerSecond, -chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond,
         false);
   }
 
