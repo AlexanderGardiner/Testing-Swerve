@@ -23,17 +23,17 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final int kFrontLeftDriveMotorPort = 3;
+    public static final int kFrontLeftDriveMotorPort = 9;
 
-    public static final int kFrontRightDriveMotorPort = 5;
-    public static final int kRearLeftDriveMotorPort = 7;
-    public static final int kRearRightDriveMotorPort = 9;
+    public static final int kFrontRightDriveMotorPort = 7;
+    public static final int kRearLeftDriveMotorPort = 5;
+    public static final int kRearRightDriveMotorPort = 3;
 
-    public static final int kFrontLeftTurningMotorPort = 2;
+    public static final int kFrontLeftTurningMotorPort = 8;
 
-    public static final int kFrontRightTurningMotorPort = 4;
-    public static final int kRearLeftTurningMotorPort = 6;
-    public static final int kRearRightTurningMotorPort = 8;
+    public static final int kFrontRightTurningMotorPort = 6;
+    public static final int kRearLeftTurningMotorPort = 4;
+    public static final int kRearRightTurningMotorPort = 2;
 
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = false;
@@ -45,14 +45,11 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
 
-    // If you call DriveSubsystem.drive() with a different period make sure to
-    // update this.
     public static final double kDrivePeriod = TimedRobot.kDefaultPeriod;
 
     public static final double kTrackWidth = 0.51;
-    // Distance between centers of right and left wheels on robot
     public static final double kWheelBase = 0.51;
-    // Distance between front and back wheels on robot
+
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -66,9 +63,8 @@ public final class Constants {
 
   public static final class ModuleConstants {
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
-    public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
 
-    public static final double kWheelDiameterMeters = 0.15;
+    public static final double kWheelDiameterMeters = 0.076;
   }
 
   public static final class OIConstants {

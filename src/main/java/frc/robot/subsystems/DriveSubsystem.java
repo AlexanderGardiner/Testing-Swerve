@@ -15,8 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.util.Gyro;
@@ -47,6 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningMotorPort,
       DriveConstants.kRearRightDriveEncoderReversed,
       DriveConstants.kRearRightTurningEncoderReversed);
+  private Field2d field = new Field2d();
 
   // The gyro sensor
   private final Gyro m_gyro = new Gyro(false, 0);
@@ -65,7 +66,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     AutoBuilder.configureHolonomic(this::getPose, this::resetOdometry, this::getRobotRelativeSpeeds, this::drive,
-        new HolonomicPathFollowerConfig(new PIDConstants(5), new PIDConstants(5), 4.5, 0.72124891681,
+        new HolonomicPathFollowerConfig(new PIDConstants(20), new PIDConstants(5), 10, 0.72124891681,
             new ReplanningConfig()),
         () -> {
           if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
@@ -87,6 +88,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    field.setRobotPose(m_odometry.getPoseMeters());
+    SmartDashboard.putData("Field", field);
   }
 
   /**
@@ -142,7 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
                 : new ChassisSpeeds(xSpeed, ySpeed, rot),
             DriveConstants.kDrivePeriod));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond * 5);
     SmartDashboard.putString("desired5i73", swerveModuleStates[0].toString());
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
@@ -151,7 +154,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds chassisSpeeds) {
-    this.drive(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond,
+    this.drive(-chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, -chassisSpeeds.omegaRadiansPerSecond,
         false);
   }
 
@@ -163,7 +166,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
+        desiredStates, DriveConstants.kMaxSpeedMetersPerSecond * 5);
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_rearLeft.setDesiredState(desiredStates[2]);
